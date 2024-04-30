@@ -38,22 +38,24 @@ class App extends Component {
   state = {
     tasksList: [],
     inputTask: '',
-    inputTag: tagsList[0].displayText,
+    inputTag: tagsList[0].optionId,
     selectedTag: '',
   }
 
   onClickAddTask = () => {
     const {inputTask, inputTag} = this.state
+    const tagName = tagsList.filter(each => each.optionId === inputTag)
+
     if (inputTask !== '') {
       const newTaskItem = {
         task: inputTask,
-        tag: inputTag,
+        tag: tagName[0].displayText,
         id: uuidv4(),
       }
       this.setState(pre => ({
         tasksList: [...pre.tasksList, newTaskItem],
         inputTask: '',
-        inputTag: tagsList[0].displayText,
+        inputTag: tagsList[0].optionId,
       }))
     }
   }
@@ -63,19 +65,25 @@ class App extends Component {
   }
 
   onChangeTag = event => {
-    const t = tagsList.filter(each => each.optionId === event.target.value)
-    this.setState({inputTag: t[0].displayText})
+    this.setState({inputTag: event.target.value})
   }
 
   onClickSelectTag = text => {
-    this.setState({
-      selectedTag: text,
-    })
+    const {selectedTag} = this.state
+    if (selectedTag === text) {
+      this.setState({
+        selectedTag: '',
+      })
+    } else {
+      this.setState({
+        selectedTag: text,
+      })
+    }
   }
 
   render() {
     const {tasksList, inputTask, inputTag, selectedTag} = this.state
-    console.log(inputTag)
+
     const selectedTasksList = tasksList.filter(each =>
       each.tag.includes(selectedTag),
     )
